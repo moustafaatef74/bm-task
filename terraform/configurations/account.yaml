@@ -1,0 +1,12 @@
+---
+# AWS region
+location: francecentral
+
+# Name of the environment
+environment: dev
+
+# Prefix for the environment
+environment_prefix: mb-task
+
+# Name of the resource group name
+resource_group_name: "mb-task-rg"

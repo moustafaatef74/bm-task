@@ -38,8 +38,8 @@ jobs:
         run: |
           cd app
           # az acr login --name $ACR_NAME
-          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
-          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/bm-task:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/bm-task:${{ github.sha }}
           docker logout ${{ secrets.REGISTRY_LOGIN_SERVER }}
 
       - name: Deploy to server
@@ -47,9 +47,9 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
           script: |
-            # sudo docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
-            docker compose restart
+            docker-compose pull
+            docker-compose up -d --force-recreate
             exit
