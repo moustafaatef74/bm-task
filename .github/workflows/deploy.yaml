@@ -51,5 +51,5 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             docker-compose pull
-						docker-compose up -d --force-recreate
-						exit
+            docker-compose up -d --force-recreate
+            exit
