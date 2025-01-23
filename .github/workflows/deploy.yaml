@@ -50,6 +50,6 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            # sudo docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/bm-task:${{ github.sha }}
-            docker compose restart
-            exit
+            docker-compose pull
+						docker-compose up -d --force-recreate
+						exit
