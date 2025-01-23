@@ -1,0 +1,55 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v3
+        
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+          
+      - name: Set up timestamp
+        run: echo "TIMESTAMP=$(date +%Y%m%d%H%M%S)" >> $GITHUB_ENV
+
+    #   - name: 'Az CLI login'
+    #     uses: azure/login@v1
+    #     with:
+    #       client-id: ${{ secrets.AZURE_CLIENT_ID }}
+    #       tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+    #       subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push with timestamp
+        run: |
+          cd app
+          # az acr login --name $ACR_NAME
+          docker build . -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
+          docker logout ${{ secrets.REGISTRY_LOGIN_SERVER }}
+
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            # sudo docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
+            docker compose restart
+            exit
