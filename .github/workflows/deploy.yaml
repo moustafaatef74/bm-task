@@ -47,8 +47,8 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.KEY }}
+          port: ${{ secrets.PORT }}
           script: |
             # sudo docker pull ${{ secrets.REGISTRY_LOGIN_SERVER }}/mb-task:${{ github.sha }}
             docker compose restart
